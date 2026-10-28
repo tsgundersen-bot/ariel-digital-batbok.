@@ -9,19 +9,25 @@ service cloud.firestore {
     function role(boatId) {
       return get(/databases/$(database)/documents/boats/$(boatId)/members/$(request.auth.uid)).data.role;
     }
-    function canEdit(boatId) { return member(boatId) && role(boatId) in ['owner', 'editor']; }
-    function owner(boatId) { return member(boatId) && role(boatId) == 'owner'; }
-
+    function canEdit(boatId) {
+      return member(boatId) && role(boatId) in ['owner', 'editor'];
+    }
+    function owner(boatId) {
+      return member(boatId) && role(boatId) == 'owner';
+    }
     match /boats/{boatId} {
-      allow read: if member(boatId);
+      allow get: if member(boatId);
+      allow list: if false;
       allow create, delete: if false;
       allow update: if owner(boatId);
       match /members/{uid} {
-        allow read: if member(boatId);
-        allow create, update, delete: if owner(boatId)
+        allow get: if member(boatId) && (uid == request.auth.uid || owner(boatId));
+        allow list: if owner(boatId);
+        allow create, update: if owner(boatId)
           && uid != request.auth.uid
           && request.resource.data.keys().hasOnly(['role'])
           && request.resource.data.role in ['editor', 'viewer'];
+        allow delete: if owner(boatId) && uid != request.auth.uid;
       }
       match /{collection}/{docId} {
         allow read: if member(boatId) &&
