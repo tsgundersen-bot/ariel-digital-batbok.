@@ -1,0 +1,18 @@
+{
+  "name": "ARIEL – Digital Båtbok",
+  "short_name": "ARIEL",
+  "description": "Lokal service- og vedlikeholdsbok for Ariel",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#edf3f6",
+  "theme_color": "#102d45",
+  "icons": [
+    {
+      "src": "icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}
